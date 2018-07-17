@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using AirportService.Services;
+using AutoMapper;
 using DALProject.Models;
+using DTOLibrary.DTOs;
 using NUnit.Framework;
 using Task4WebAppTests.Fakes;
 
@@ -59,5 +61,99 @@ namespace Task4WebAppTests.Services
 			Assert.Throws<ArgumentNullException>(() => service.CreatePilot(null));
 
 		}
+
+		[Test]
+		public void Create_When_gets_notValid_Then_return_exception()
+		{
+			//Arrange
+			
+			PilotDTO pilotDTO = new PilotDTO() { Id = 7, Name = "The most amazing thing on the earth is a coffee without any milk and sugar.he most amazing thing on the earth is a coffee without any milk and sugar.he most amazing thing on the earth is a coffee without any milk and sugar. The most amazing thing on the earth is a coffee without any milk and sugar.he most amazing thing on the earth is a coffee without any milk and sugar.he most amazing thing on the earth is a coffee without any milk and sugar. ", Surname = "Quest" };
+
+			var service = new PilotService(_unit);
+
+			//Act & Assert
+			Assert.Throws<AutoMapperMappingException>(() => service.CreatePilot(pilotDTO));
+
+
+		}
+
+		[Test]
+		public void Create_When_gets_notValidId_Then_return_exception()
+		{
+			//Arrange
+
+			PilotDTO pilotDTO = new PilotDTO() { Id = 1, Name = "The ", Surname = "Most" };
+
+			var service = new PilotService(_unit);
+
+			//Act & Assert
+			Assert.Throws<ArgumentOutOfRangeException>(() => service.CreatePilot(pilotDTO));
+
+
+		}
+
+		[Test]
+		public void Create_When_gets_Valid_Then_Insert()
+		{
+			PilotDTO pilotDTO = new PilotDTO() { Name = "Quest", Surname = "Quest" };
+			//Arrange
+			var service = new PilotService(_unit);
+			//Act&Assert
+			
+			Assert.DoesNotThrow(()=>service.CreatePilot(pilotDTO));
+		}
+
+		[Test]
+		public void Update_When_gets_null_Then_return_exception()
+		{
+			//Arrange
+
+			var service = new PilotService(_unit);
+			//Act & Assert
+			Assert.Throws<ArgumentNullException>(() => service.UpdatePilot(null));
+
+		}
+
+		[Test]
+		public void Update_When_gets_notValid_Then_return_exception()
+		{
+			//Arrange
+
+			PilotDTO pilotDTO = new PilotDTO() { Id = 2, Name = "The ", Surname = "most amazing thing on the earth is a coffee without any milk and sugar.he most amazing thing on the earth is a coffee without any milk and sugar.he most amazing thing on the earth is a coffee without any milk and sugar. " };
+
+			var service = new PilotService(_unit);
+
+			//Act & Assert
+			Assert.Throws<AutoMapperMappingException>(() => service.UpdatePilot(pilotDTO));
+
+
+		}
+
+		[Test]
+		public void Update_When_gets_notValidId_Then_return_exception()
+		{
+			//Arrange
+
+			PilotDTO pilotDTO = new PilotDTO() { Id = 7, Name = "The ", Surname = "Most" };
+
+			var service = new PilotService(_unit);
+
+			//Act & Assert
+			Assert.Throws<ArgumentOutOfRangeException>(() => service.UpdatePilot(pilotDTO));
+
+
+		}
+
+		[Test]
+		public void Update_When_gets_Valid_Then_Insert()
+		{
+			PilotDTO pilotDTO = new PilotDTO() {Id=2, Name = "Quest", Surname = "Quest" };
+			//Arrange
+			var service = new PilotService(_unit);
+			//Act&Assert
+
+			Assert.DoesNotThrow(() => service.UpdatePilot(pilotDTO));
+		}
 	}
 }
+//
