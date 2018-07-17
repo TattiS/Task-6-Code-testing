@@ -8,8 +8,10 @@ namespace DTOLibrary.DTOs
     public class PilotDTO
     {
 		public int Id { get; set; }
+		[StringLength(50)]
 		[Required]
 		public string Name { get; set; }
+		[StringLength(50)]
 		[Required]
 		public string Surname { get; set; }
 

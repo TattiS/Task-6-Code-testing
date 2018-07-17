@@ -28,10 +28,14 @@ namespace AirportService.Services
 		{
 			var mapConfig = new MapperConfiguration(c =>
 			{
-				
-				c.CreateMap<Pilot, PilotDTO>().ForMember(e => e.StartedIn, opt => opt.Ignore());
+
+				c.CreateMap<Pilot, PilotDTO>().ForMember(e => e.StartedIn, opt => opt.Ignore())
+												.ForMember(e => e.Name, opt => opt.PreCondition(src => (src.Name.Length < 50)))
+												.ForMember(e => e.Surname, opt => opt.PreCondition(src => (src.Surname.Length < 50)));
 				c.CreateMap<PilotDTO, Pilot>().ForMember(e => e.Experience, opt => opt.MapFrom(src => (DateTime.Today.Subtract(src.StartedIn))))
-											  .ForMember(e => e.TimeTicks, opt => opt.Ignore());
+											  .ForMember(e => e.TimeTicks, opt => opt.Ignore())
+											  .ForMember(e => e.Name, opt => opt.PreCondition(src => (src.Name.Length < 50)))
+											  .ForMember(e => e.Surname, opt => opt.PreCondition(src => (src.Surname.Length < 50)));  
 				
 			});
 			mapConfig.AssertConfigurationIsValid();
@@ -46,7 +50,16 @@ namespace AirportService.Services
 		{
 			if (pilot != null)
 			{
+				if (unit.PilotsRepo.GetEntityById(pilot.Id) != null)
+				{
+					throw new ArgumentOutOfRangeException("Such user exsists!");
+				}
 				Pilot newPilot = mapper.Map<PilotDTO, Pilot>(pilot);
+				if (newPilot == null || newPilot.Name == null || newPilot.Surname ==null)
+				{
+					throw new AutoMapperMappingException("Couldn't map PilotDTO into Pilot");
+				}
+
 				unit.PilotsRepo.Insert(newPilot);
 				unit.SaveChanges();
 			}
@@ -80,7 +93,16 @@ namespace AirportService.Services
 		{
 			if (pilot != null)
 			{
+				
+				if (unit.PilotsRepo.GetEntityById(pilot.Id) == null)
+				{
+					throw new ArgumentOutOfRangeException("Such user doesn't exsist!");
+				}
 				Pilot updtPilot = mapper.Map<PilotDTO, Pilot>(pilot);
+				if (updtPilot == null || updtPilot.Name == null || updtPilot.Surname == null)
+				{
+					throw new AutoMapperMappingException("Couldn't map PilotDTO into Pilot");
+				}
 				unit.PilotsRepo.Update(updtPilot);
 				unit.SaveChanges();
 			}
